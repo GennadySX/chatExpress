@@ -5,13 +5,10 @@ var app = {
   rooms: function(){
 
     var socket = io('/rooms', { transports: ['websocket'] });
-
     // When socket connects, get a list of chatrooms
     socket.on('connect', function () {
-
       // Update rooms list upon emitting updateRoomsList event
       socket.on('updateRoomsList', function(room) {
-
         // Display an error message upon a user error(i.e. creating a room with an existing title)
         $('.room-create p.message').remove();
         if(room.error != null){
@@ -35,7 +32,6 @@ var app = {
   },
 
   chat: function(roomId, username){
-    
     var socket = io('/chatroom', { transports: ['websocket'] });
 
       // When socket connects, join the current chatroom
@@ -53,15 +49,20 @@ var app = {
             app.helpers.updateUsersList(users, clear);
           }
         });
-
         // Whenever the user hits the save button, emit newMessage event.
+
+        
+
+
+
+        /**********************************Here a simple query for save data ********************/
         $(".chat-message button").on('click', function(e) {
 
           var textareaEle = $("textarea[name='message']");
           var messageContent = textareaEle.val().trim();
           if(messageContent !== '') {
-            var message = { 
-              content: messageContent, 
+            var message = {
+              content: messageContent,
               username: username,
               date: Date.now()
             };
@@ -78,7 +79,7 @@ var app = {
           app.helpers.updateNumOfUsers();
         });
 
-        // Append a new message 
+        // Append a new message
         socket.on('addMessage', function(message) {
           app.helpers.addMessage(message);
         });
@@ -104,7 +105,7 @@ var app = {
       }else{
         $('.room-list ul').html('').html(html);
       }
-      
+
       this.updateNumOfRooms();
     },
 
@@ -141,7 +142,6 @@ var app = {
       message.date      = (new Date(message.date)).toLocaleString();
       message.username  = this.encodeHTML(message.username);
       message.content   = this.encodeHTML(message.content);
-
       var html = `<li>
                     <div class="message-data">
                       <span class="message-data-name">${message.username}</span>
@@ -150,7 +150,6 @@ var app = {
                     <div class="message my-message" dir="auto">${message.content}</div>
                   </li>`;
       $(html).hide().appendTo('.chat-history ul').slideDown(200);
-
       // Keep scroll bar down
       $(".chat-history").animate({ scrollTop: $('.chat-history')[0].scrollHeight}, 1000);
     },
