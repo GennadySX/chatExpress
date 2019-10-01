@@ -31,7 +31,7 @@ var app = {
     });
   },
 
-  chat: function(roomId, username){
+  chat: function(roomId, username, userId){
     var socket = io('/chatroom', { transports: ['websocket'] });
 
       // When socket connects, join the current chatroom
@@ -51,7 +51,7 @@ var app = {
         });
         // Whenever the user hits the save button, emit newMessage event.
 
-        
+
 
 
 
@@ -67,7 +67,11 @@ var app = {
               date: Date.now()
             };
 
-            socket.emit('newMessage', roomId, message);
+            socket.emit('newMessage', roomId, message, userId);
+            console.log("room: ", roomId);
+            console.log("message: ", message);
+            console.log("user: ", userId);
+            //socket.emit('saveIt', roomId, userId, message);
             textareaEle.val('');
             app.helpers.addMessage(message);
           }
@@ -80,9 +84,15 @@ var app = {
         });
 
         // Append a new message
-        socket.on('addMessage', function(message) {
-          app.helpers.addMessage(message);
+        socket.on('addMessage', function(message, user) {
+          app.helpers.addMessage(message, user);
         });
+
+
+        socket.on('saveIt', function (roomId, userId, message) {
+          app.helpers.saveIt(roomId, userId, message);
+        })
+
       });
   },
 
@@ -138,7 +148,7 @@ var app = {
     },
 
     // Adding a new message to chat history
-    addMessage: function(message){
+    addMessage: function(message, user){
       message.date      = (new Date(message.date)).toLocaleString();
       message.username  = this.encodeHTML(message.username);
       message.content   = this.encodeHTML(message.content);
@@ -150,6 +160,7 @@ var app = {
                     <div class="message my-message" dir="auto">${message.content}</div>
                   </li>`;
       $(html).hide().appendTo('.chat-history ul').slideDown(200);
+      console.log(user);
       // Keep scroll bar down
       $(".chat-history").animate({ scrollTop: $('.chat-history')[0].scrollHeight}, 1000);
     },
@@ -166,6 +177,12 @@ var app = {
     updateNumOfUsers: function(){
       var num = $('.users-list ul li').length;
       $('.chat-num-users').text(num +  " User(s)");
+    },
+    saveIt: function (roomId, userId, message) {
+      console.log('room: ', roomId);
+      console.log('user: ', userId);
+      console.log('message: ', message);
+
     }
   }
 };

@@ -5,6 +5,7 @@ var redis 	= require('redis').createClient;
 var adapter = require('socket.io-redis');
 
 var Room = require('../models/room');
+var Chat = require('../models/chat');
 
 var ioEvents = function(io) {
 
@@ -94,14 +95,22 @@ var ioEvents = function(io) {
 		});
 
 		// When a new message arrives
-		socket.on('newMessage', function(roomId, message) {
+		socket.on('newMessage', function(roomId, message, userId) {
 
 			// No need to emit 'addMessage' to the current socket
 			// As the new message will be added manually in 'main.js' file
 			// socket.emit('addMessage', message);
-
 			socket.broadcast.to(roomId).emit('addMessage', message);
+
+
+
 		});
+
+
+		socket.on('saveIt', function (roomId, userId, message) {
+
+		});
+
 
 	});
 }

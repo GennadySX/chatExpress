@@ -4,7 +4,7 @@
 		"port": "27017",
 		"name": "chatio"
 	},
-	"sessionSecret": "asdasdasdasd",
+	"sessionSecret": "abc",
 	"facebook": {
 		"clientID": "<AppID>",
 		"clientSecret": "<AppSecret>",
